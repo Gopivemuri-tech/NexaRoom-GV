@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Plans | NexaRoom{% endblock %}
+{% block content %}
+<main class="page">
+  <section class="page-intro centered-intro">
+    <span class="section-kicker">PLANS</span>
+    <h1>Choose what fits.</h1>
+    <p>Simple limits. Clear features.</p>
+  </section>
+  <section class="plans">
+  {% for plan in plans %}
+    <article class="plan {% if subscription.plan_id == plan.id %}current{% endif %}">
+      <div class="plan-heading">
+        <div>
+          <span class="section-kicker">{{plan.name|upper}}</span>
+          <h2>{{plan.name}}</h2>
+        </div>
+        {% if subscription.plan_id == plan.id %}<span class="badge">CURRENT</span>{% endif %}
+      </div>
+      <div class="price">{% if plan.price_monthly == 0 %}Free{% else %}₹{{plan.price_monthly|floatformat:0}}<small>/month</small>{% endif %}</div>
+      <ul class="plan-features">
+        <li><span>Meeting time</span><b>{{plan.meeting_limit_label}}</b></li>
+        <li><span>Participants</span><b>{{plan.max_participants}}</b></li>
+        <li><span>Video</span><b>{{plan.video_quality}}</b></li>
+        <li><span>Files</span><b>{{plan.max_file_mb}} MB</b></li>
+        <li><span>Screen share</span><b>{% if plan.screen_share %}Yes{% else %}—{% endif %}</b></li>
+        <li><span>Whiteboard</span><b>{% if plan.whiteboard %}Yes{% else %}—{% endif %}</b></li>
+        <li><span>Recording</span><b>{% if plan.recording %}Yes{% else %}—{% endif %}</b></li>
+      </ul>
+      {% if subscription.plan_id == plan.id %}
+        <button class="secondary full-btn" disabled>Active plan</button>
+      {% else %}
+        <a class="primary full-btn" href="{% url 'buy_plan' plan.id %}">Select {{plan.name}}</a>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </section>
+</main>
+{% endblock %}

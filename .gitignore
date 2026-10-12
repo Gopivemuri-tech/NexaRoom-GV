@@ -1,0 +1,47 @@
+# Secrets and local environments
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.sqlite3
+*.db
+
+# Runtime state / user data
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+staticfiles/
+media/
+logs/
+backups/
+*.log
+*.pid
+
+# Deployment / OS / editor files
+.git/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.zip
+*.tar
+*.gz
+*.sql
+*.dump
+*.bak
+
+# Recordings or private user media
+recordings/
+private/
+*.mp4
+*.webm

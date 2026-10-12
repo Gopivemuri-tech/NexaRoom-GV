@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My profile | NexaRoom-GV{% endblock %}
+{% block content %}
+<main class="page nexa-account-page">
+  <div class="nexa-page-heading"><div><span class="section-kicker">ACCOUNT & SETTINGS</span><h1>My profile</h1><p>Update the details teammates see in meetings.</p></div><a class="nexa-back-link" href="{% url 'dashboard' %}">← Back to workspace</a></div>
+  <section class="nexa-profile-layout">
+    <aside class="nexa-profile-summary panel">
+      <div class="nexa-profile-preview">{% if profile.photo %}<img src="{{profile.photo.url}}" alt="Profile photo">{% else %}{{user.get_full_name|default:user.username|first|upper}}{% endif %}</div>
+      <h2>{{user.get_full_name|default:user.username}}</h2><p>@{{user.username}}</p><span class="nexa-profile-label">{% if user.is_staff %}Workspace administrator{% else %}NexaRoom member{% endif %}</span>
+      <p class="nexa-photo-hint">When your camera is off, this photo will appear in the meeting.</p>
+    </aside>
+    <section class="nexa-profile-form panel"><h2>Account information</h2><p class="nexa-form-subtitle">Your username is used for signing in and stays unchanged.</p>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      {% if form.non_field_errors %}<p class="error">{{form.non_field_errors}}</p>{% endif %}
+      <label>Username <input value="{{user.username}}" readonly aria-label="Username"></label>
+      {% for field in form %}<label class="nexa-profile-input">{{field.label}} {{field}}{% if field.help_text %}<small>{{field.help_text}}</small>{% endif %}{% for e in field.errors %}<small class="error">{{e}}</small>{% endfor %}</label>{% endfor %}
+      <button class="primary" type="submit">Save profile changes</button>
+    </form></section>
+  </section>
+</main>
+{% endblock %}

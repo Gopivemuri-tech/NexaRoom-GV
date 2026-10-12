@@ -1,0 +1,7 @@
+from django.contrib.auth import views as auth_views
+from django.urls import path
+from . import views
+urlpatterns=[
+ path('',views.dashboard,name='dashboard'),path('account/',views.account_profile,name='account_profile'),path('media/nexaroom_profiles/<str:filename>',views.account_photo,name='account_photo'),path('signup/',views.signup_view,name='signup'),path('login/',auth_views.LoginView.as_view(template_name='registration/login.html'),name='login'),path('logout/',auth_views.LogoutView.as_view(),name='logout'),
+ path('meeting/create/',views.create_meeting,name='create_meeting'),path('meeting/schedule/',views.schedule_meeting,name='schedule_meeting'),path('meeting/join/',views.join_meeting,name='join_meeting'),path('meet/<uuid:meeting_id>/',views.meeting_room,name='meeting_room'),path('meet/<uuid:meeting_id>/state/',views.meeting_state_api,name='meeting_state_api'),path('meet/<uuid:meeting_id>/end/',views.end_meeting_api,name='end_meeting_api'),path('meetings/',views.meetings,name='meetings'),path('plans/',views.plans,name='plans'),path('plans/<int:plan_id>/buy/',views.buy_plan,name='buy_plan'),
+ path('control/',views.control_center,name='control_center'),path('control/plan/<int:plan_id>/',views.control_update_plan,name='control_update_plan'),path('control/user/<int:user_id>/plan/',views.control_assign_plan,name='control_assign_plan'),path('control/meeting/<uuid:meeting_id>/end/',views.control_end_meeting,name='control_end_meeting')]

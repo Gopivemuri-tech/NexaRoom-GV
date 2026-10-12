@@ -1,0 +1,153 @@
+/* NexaRoom-GV V9.9: meeting presentation only. Do not change WebRTC, ICE, TURN or signaling CSS semantics. */
+/* Desktop: the participants are a permanent TWO-COLUMN side rail, never top thumbnails. */
+.meeting-body .meeting-workspace {
+  display: grid !important;
+  grid-template-columns: clamp(246px, 22vw, 310px) minmax(0,1fr);
+  grid-template-rows: minmax(0,1fr);
+  flex: 1 1 auto;
+  height: 100%; min-height: 0; min-width: 0;
+  overflow: hidden;
+}
+.meeting-body .filmstrip {
+  grid-column: 1; grid-row: 1;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  grid-auto-rows: 108px;
+  align-content: start;
+  justify-content: stretch;
+  gap: 9px;
+  width: 100% !important; height: 100% !important; min-height: 0;
+  padding: 12px 10px !important;
+  overflow-x: hidden !important; overflow-y: auto !important;
+  border-right: 1px solid #253747 !important; border-bottom: 0 !important;
+  overscroll-behavior-y: contain;
+}
+.meeting-body .filmstrip .participant-thumb {
+  width: 100% !important; height: 108px !important; max-height: none !important;
+  min-width: 0 !important; min-height: 0 !important; margin: 0 !important;
+  flex: none !important; border-radius: 11px !important;
+}
+.meeting-body .filmstrip .participant-thumb .participant-name {
+  max-width: calc(100% - 8px); padding: 3px 5px; font-size: 9px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.meeting-body .filmstrip .participant-thumb .participant-name .n {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.meeting-body .speaker-stage {
+  grid-column: 2; grid-row: 1;
+  width: 100%; min-width: 0; min-height: 0; height: 100%;
+  padding: 11px !important;
+}
+.meeting-body .speaker-frame {width:100%;height:100%;min-width:0;min-height:0;}
+/* Reference-style 3-up square More menu; buttons and IDs stay unchanged. */
+.meeting-body .more-wrap {position: relative;}
+.meeting-body #moreMenu.more-menu-full:not(.hidden) {
+  display: grid !important;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 7px;
+  width: 355px !important;
+  max-width: calc(100vw - 20px);
+  padding: 12px !important;
+  position: absolute;
+  right: 0; left: auto; bottom: 72px;
+  transform: none;
+  border-radius: 18px;
+  z-index: 100;
+  max-height: min(62vh,470px);
+  overflow-y: auto;
+}
+.meeting-body #moreMenu .more-item {
+  position: relative;
+  display: flex !important; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-width: 0; width: 100%; min-height: 90px;
+  padding: 11px 4px 9px !important;
+  gap: 8px !important;
+  background: #1b2a38; border: 1px solid #2e4354;
+  border-radius: 13px;
+  text-align: center !important;
+}
+.meeting-body #moreMenu .more-item:hover,
+.meeting-body #moreMenu .more-item:focus-visible {background:#263f4c; border-color:#52b79e;outline:none;}
+.meeting-body #moreMenu .more-icon {
+  display: grid;place-items:center;
+  width: 34px;height: 34px; flex: 0 0 34px;
+  background: transparent !important; color: #d9f6ed !important;
+  border-radius: 8px;
+}
+.meeting-body #moreMenu .more-icon svg {width:27px;height:27px;stroke-width:1.65;fill:none;stroke:currentColor;}
+.meeting-body #moreMenu .more-item div {display:block;width:100%;min-width:0;}
+.meeting-body #moreMenu .more-item b {display:block;color:#eff6f7;font-size:10.5px;line-height:1.25;white-space:normal;overflow-wrap:anywhere;}
+.meeting-body #moreMenu .more-item small {display:none !important;}
+/* OFF icons retain the red states; only their crossed-out SVG overlay is new. */
+.meeting-body #micBtn .device-slash,.meeting-body #camBtn .device-slash {display:none;stroke-width:2.9;stroke:#ffe0e0;stroke-linecap:round;}
+.meeting-body #micBtn.off .device-slash,.meeting-body #camBtn.off .device-slash {display:block;}
+.meeting-body #micBtn.off .tool-icon,.meeting-body #camBtn.off .tool-icon {
+  background:#5c2632 !important;color:#ffd7dc !important;
+}
+/* Unread badge on toolbar and More/Files surfaces. */
+.meeting-body .meeting-unread {
+  display:grid; place-items:center;
+  position:absolute;right:4px;top:3px;
+  min-width:19px;height:19px;padding:0 4px;
+  border-radius:12px; background:#e54858;color:#fff;
+  border:2px solid #101924; font-size:10px;font-weight:800;
+  z-index:5; pointer-events:none;
+}
+.meeting-body #moreMenu .meeting-unread.mini-unread {top:4px;right:5px;}
+/* Actionable meeting messages are visible even when Chat/Files pane is closed. */
+.meeting-notification-stack {
+  position:fixed;top:76px;right:18px;z-index:280;
+  width:min(340px,calc(100vw - 22px));
+  display:flex;flex-direction:column;gap:9px;pointer-events:none;
+}
+.meeting-activity {
+  display:flex;align-items:center;gap:11px;width:100%;
+  min-height:72px;padding:12px 11px;
+  text-align:left;cursor:pointer;pointer-events:auto;
+  border:1px solid #3d8578;border-radius:15px;
+  background:#142b34;box-shadow:0 14px 36px #0007;
+  color:#f0fafb;
+  animation:nexaNoticeIn .23s ease-out;
+}
+.meeting-activity .activity-icon {display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;background:#23504c;border-radius:10px;font-size:21px;color:#9af1d1;}
+.meeting-activity .activity-copy {display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;}
+.meeting-activity .activity-copy strong {font-size:12px;line-height:1.3;}
+.meeting-activity .activity-copy>span {font-size:11px;line-height:1.3;color:#bbd4d6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere;}
+.meeting-activity .activity-close {align-self:flex-start;opacity:.8;font-size:20px;line-height:15px;min-width:18px;text-align:center;}
+.meeting-activity.exiting{opacity:0;transform:translateX(12px);transition:.22s ease;}
+@keyframes nexaNoticeIn {from{opacity:0;transform:translateX(15px);}to{opacity:1;transform:none;}}
+@media (max-width: 1040px) {
+ .meeting-body .meeting-workspace {grid-template-columns: 215px minmax(0,1fr);}
+ .meeting-body .filmstrip {grid-auto-rows:90px;gap:7px;padding:8px 6px !important;}
+ .meeting-body .filmstrip .participant-thumb {height:90px !important;}
+}
+@media (max-width: 760px) {
+ /* Maintain side rail on mobile, one thumbnail per row for legibility. */
+ .meeting-body .meeting-workspace {
+   display:grid !important;flex:1 1 0;height:100% !important;min-height:0;
+   grid-template-columns:132px minmax(0,1fr);
+ }
+ .meeting-body .filmstrip {
+   grid-template-columns:minmax(0,1fr);grid-auto-rows:100px;
+   padding:6px !important;gap:7px;
+   width:100% !important;height:100% !important;
+   overflow-x:hidden !important;overflow-y:auto !important;
+ }
+ .meeting-body .filmstrip .participant-thumb {width:100% !important;height:100px !important;flex:none !important;}
+ .meeting-body .speaker-stage {padding:6px !important;height:100% !important;min-height:0;}
+ .meeting-body #moreMenu.more-menu-full:not(.hidden) {
+   position:fixed;left:50%;right:auto;transform:translateX(-50%);
+   bottom:calc(130px + env(safe-area-inset-bottom,0px));
+   max-height:min(56vh,380px);width:min(355px,calc(100vw - 18px)) !important;
+ }
+ .meeting-notification-stack {top:62px;right:8px;}
+}
+@media (max-width: 420px) {
+ .meeting-body .meeting-workspace {grid-template-columns:104px minmax(0,1fr);}
+ .meeting-body .filmstrip .participant-thumb {height:88px !important;}
+ .meeting-body .filmstrip {grid-auto-rows:88px;}
+ .meeting-body .filmstrip .participant-thumb .participant-name {font-size:8px;}
+ .meeting-body #moreMenu .more-item {min-height:77px;}
+ .meeting-body #moreMenu .more-item b {font-size:9px;}
+}
+@media (prefers-reduced-motion: reduce) {.meeting-activity{animation:none;}.meeting-activity.exiting{transition:none;}}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create account | NexaRoom-GV{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<main class="auth-shell">
+  <section class="auth-visual">
+    <a class="brand auth-brand" href="#"><img src="{% static 'img/nexaroom-mark.svg' %}" alt=""><span>NexaRoom-GV</span></a>
+    <div class="auth-visual-copy"><span class="section-kicker">GET STARTED</span><h1>Your room.<br>Your team.</h1><p>Create, invite and collaborate.</p></div>
+    <div class="auth-feature-row"><span>Meet</span><span>Share</span><span>Collaborate</span></div>
+  </section>
+  <section class="auth-card signup-card">
+    <span class="section-kicker">CREATE ACCOUNT</span>
+    <h2>Join NexaRoom-GV</h2>
+    <p class="auth-subtitle">Set up your workspace access.</p>
+    <form method="post" id="registrationForm">{% csrf_token %}<input type="hidden" name="next" value="{{ next_target }}">
+      {% if form.non_field_errors %}<div class="error">{{form.non_field_errors}}</div>{% endif %}
+      {% for f in form %}<label>{{f.label}}{{f}}{% for e in f.errors %}<small class="error">{{e}}</small>{% endfor %}</label>{% endfor %}
+      <button class="primary full-btn" type="submit" id="registrationButton">Create account</button>
+    </form>
+    <p class="auth-switch">Already registered? <a href="{% url 'login' %}">Sign in</a></p>
+  </section>
+</main>
+{% endblock %}
+
+{% block scripts %}<script>
+// Prevent duplicate creates when mobile browsers double-tap on a slow network.
+(()=>{const f=document.getElementById('registrationForm');let sent=false;f?.addEventListener('submit',e=>{if(sent){e.preventDefault();return}sent=true;const b=document.getElementById('registrationButton');if(b){b.disabled=true;b.textContent='Creating account…'}});window.addEventListener('pageshow',()=>{sent=false;const b=document.getElementById('registrationButton');if(b){b.disabled=false;b.textContent='Create account'}})})();
+</script>{% endblock %}

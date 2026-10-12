@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{plan.name}} | NexaRoom{% endblock %}
+{% block content %}
+<main class="page checkout-page">
+  <a class="back-link" href="{% url 'plans' %}">← Plans</a>
+  <section class="checkout-shell">
+    <div class="checkout-main">
+      <span class="section-kicker">CHECKOUT</span>
+      <h1>{{plan.name}}</h1>
+      <p class="checkout-lead">Review your plan.</p>
+
+      <div class="checkout-plan-card">
+        <div class="checkout-plan-head">
+          <div><span class="plan-symbol">{{plan.name|first}}</span><div><b>{{plan.name}}</b><small>Monthly plan</small></div></div>
+          <div class="checkout-price">{% if plan.price_monthly == 0 %}Free{% else %}₹{{plan.price_monthly|floatformat:0}}<small>/mo</small>{% endif %}</div>
+        </div>
+        <div class="checkout-features">
+          <div><span>Duration</span><b>{{plan.meeting_limit_label}}</b></div>
+          <div><span>Participants</span><b>{{plan.max_participants}}</b></div>
+          <div><span>Video</span><b>{{plan.video_quality}}</b></div>
+          <div><span>Files</span><b>{{plan.max_file_mb}} MB</b></div>
+          <div><span>Screen share</span><b>{% if plan.screen_share %}Included{% else %}—{% endif %}</b></div>
+          <div><span>Whiteboard</span><b>{% if plan.whiteboard %}Included{% else %}—{% endif %}</b></div>
+        </div>
+      </div>
+
+      <div class="payment-choice">
+        <span class="section-kicker">PAY WITH</span>
+        <label class="payment-option selected"><input type="radio" name="payment_method" checked><span class="payment-icon">UPI</span><div><b>UPI</b><small>Any UPI app</small></div></label>
+        <label class="payment-option"><input type="radio" name="payment_method"><span class="payment-icon">CARD</span><div><b>Card</b><small>Credit or debit card</small></div></label>
+      </div>
+    </div>
+
+    <aside class="checkout-summary">
+      <span class="section-kicker">SUMMARY</span>
+      <div class="summary-line"><span>{{plan.name}}</span><b>₹{{plan.price_monthly|floatformat:0}}</b></div>
+      <div class="summary-line muted-line"><span>Taxes</span><b>At payment</b></div>
+      <div class="summary-total"><span>Total</span><b>₹{{plan.price_monthly|floatformat:0}}</b></div>
+      {% if subscription.plan_id == plan.id %}
+        <button class="secondary full-btn" disabled>Current plan</button>
+      {% elif plan.price_monthly == 0 %}
+        <a href="{% url 'plans' %}" class="secondary full-btn">Selected</a>
+      {% else %}
+        <button id="proceedPayment" class="primary full-btn" type="button">Continue</button>
+        <p class="payment-disclaimer">Payment gateway is not connected in this build.</p>
+      {% endif %}
+    </aside>
+  </section>
+</main>
+<section id="paymentNotice" class="app-dialog hidden" role="dialog" aria-modal="true">
+  <div class="app-dialog-card">
+    <div class="app-dialog-icon">₹</div>
+    <div class="app-dialog-copy"><span class="section-kicker">PAYMENT</span><h3>Gateway not connected</h3><p>Connect Razorpay or Stripe for live payments.</p></div>
+    <div class="app-dialog-actions"><button id="closePaymentNotice" class="dialog-primary">Close</button></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('.payment-option').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('.payment-option').forEach(y=>y.classList.remove('selected'));x.classList.add('selected');}));
+document.getElementById('proceedPayment')?.addEventListener('click',()=>document.getElementById('paymentNotice').classList.remove('hidden'));
+document.getElementById('closePaymentNotice')?.addEventListener('click',()=>document.getElementById('paymentNotice').classList.add('hidden'));
+</script>
+{% endblock %}

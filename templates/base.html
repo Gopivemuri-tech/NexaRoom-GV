@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}NexaRoom-GV{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/nexaroom-mark.svg' %}?v=8">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=8">
+  <link rel="stylesheet" href="{% static 'css/nexaroom-polish.css' %}?v=20261011b">
+</head>
+<body class="{% block body_class %}app-body{% endblock %}">
+{% if user.is_authenticated %}
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="{% url 'dashboard' %}" aria-label="NexaRoom-GV home">
+      <img src="{% static 'img/nexaroom-mark.svg' %}" alt="">
+      <span>NexaRoom-GV</span>
+    </a>
+    <nav class="topnav" aria-label="Primary navigation">
+      <a href="{% url 'dashboard' %}">Home</a>
+      <a href="{% url 'meetings' %}">Meetings</a>
+      <a href="{% url 'plans' %}">Plans</a>
+      {% if user.is_staff %}<a href="{% url 'control_center' %}">Control</a>{% endif %}
+    </nav>
+    <div class="account">
+      <a href="{% url 'account_profile' %}" class="account-profile-link" aria-label="View and edit your account details">
+      <span class="account-avatar">{% if account_photo_url %}<img class="nexa-avatar-img" src="{{account_photo_url}}" alt="">{% else %}{{ user.get_full_name|default:user.username|first|upper }}{% endif %}</span>
+      <div class="account-copy">
+        <b>{{ user.get_full_name|default:user.username }}</b>
+        <span>@{{ user.username }}</span>
+      </div>
+      </a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+        <button class="icon-only signout-btn" title="Sign out" aria-label="Sign out">
+          <svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 8l4 4-4 4M18 12H9"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</header>
+{% endif %}
+{% if messages %}
+<div class="flash-wrap">{% for m in messages %}<div class="flash">{{m}}</div>{% endfor %}</div>
+{% endif %}
+{% block content %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

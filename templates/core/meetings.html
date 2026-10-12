@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Meetings | NexaRoom{% endblock %}
+{% block content %}
+<main class="page">
+  <section class="page-intro compact-intro">
+    <span class="section-kicker">MEETINGS</span>
+    <h1>Meeting history</h1>
+    <p>Your hosted and joined rooms.</p>
+  </section>
+  <section class="history-grid">
+    <article class="panel">
+      <div class="panel-head"><div><span class="section-kicker">HOSTED</span><h2>Hosted by you</h2></div><span class="panel-count">{{ hosted|length }}</span></div>
+      <div class="meeting-list">
+        {% for m in hosted %}
+        <a class="meeting-list-row" href="{% url 'meeting_room' m.id %}">
+          <span class="meeting-list-icon"><svg viewBox="0 0 24 24"><path d="M15 10l4-2.7v9.4L15 14M5 6.5h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"/></svg></span>
+          <span class="meeting-list-copy"><b>{{m.title}}</b><small>{{m.created_at|date:'M d, Y · h:i A'}}</small></span>
+          <span class="meeting-list-meta"><em class="meeting-state {{m.status}}">{{m.get_status_display}}</em><strong>{{m.meeting_code_display}}</strong></span>
+        </a>
+        {% empty %}<div class="empty-state">No hosted meetings.</div>{% endfor %}
+      </div>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><div><span class="section-kicker">JOINED</span><h2>Joined meetings</h2></div><span class="panel-count">{{ joined|length }}</span></div>
+      <div class="meeting-list">
+        {% for m in joined %}
+        <a class="meeting-list-row" href="{% url 'meeting_room' m.id %}">
+          <span class="meeting-list-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6M12 9v6M4 6.5h16v11H4z"/></svg></span>
+          <span class="meeting-list-copy"><b>{{m.title}}</b><small>{{m.host.username}}</small></span>
+          <span class="meeting-list-meta"><em class="meeting-state {{m.status}}">{{m.get_status_display}}</em></span>
+        </a>
+        {% empty %}<div class="empty-state">No joined meetings.</div>{% endfor %}
+      </div>
+    </article>
+  </section>
+</main>
+{% endblock %}

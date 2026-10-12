@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Meeting ended | NexaRoom{% endblock %}
+{% block content %}
+<main class="center status-page"><div class="waiting"><span class="status-icon">✓</span><span class="section-kicker">MEETING ENDED</span><h1>{{meeting.title}}</h1><p>This room is closed.</p><a class="primary" href="{% url 'dashboard' %}">Back home</a></div></main>
+{% endblock %}

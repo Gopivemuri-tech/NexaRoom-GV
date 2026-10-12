@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Control | NexaRoom{% endblock %}
+{% block content %}
+<main class="page control-page">
+  <section class="page-intro compact-intro"><span class="section-kicker">CONTROL</span><h1>Workspace control</h1><p>Users, rooms and plan limits.</p></section>
+  <section class="stats">
+    <article><span>Users</span><b>{{stats.users}}</b></article>
+    <article><span>Meetings</span><b>{{stats.meetings}}</b></article>
+    <article><span>Live</span><b>{{stats.live}}</b></article>
+    <article><span>Subscriptions</span><b>{{stats.subscriptions}}</b></article>
+  </section>
+  <article class="panel">
+    <div class="panel-head"><div><span class="section-kicker">LIVE</span><h2>Active rooms</h2></div><a href="/admin/">Django Admin</a></div>
+    {% for m in live_meetings %}<div class="admin-row"><div><b>{{m.title}}</b><span>{{m.host.username}} · {{m.short_id}}</span></div><form method="post" action="{% url 'control_end_meeting' m.id %}">{% csrf_token %}<button class="danger">End</button></form></div>{% empty %}<div class="empty-state">No live meetings.</div>{% endfor %}
+  </article>
+  <article class="panel gap">
+    <div class="panel-head"><div><span class="section-kicker">PLANS</span><h2>Plan policies</h2></div></div>
+    <div class="control-plans">{% for p in plans %}<form method="post" action="{% url 'control_update_plan' p.id %}" class="control-plan">{% csrf_token %}<h3>{{p.name}}</h3><label>Meeting minutes<input name="meeting_minutes" value="{{p.meeting_minutes|default_if_none:''}}" placeholder="Blank = unlimited"></label><label>Participants<input type="number" name="max_participants" value="{{p.max_participants}}"></label><label>File limit (MB)<input type="number" name="max_file_mb" value="{{p.max_file_mb}}"></label><label>Video<select name="video_quality"><option {% if p.video_quality == '720p' %}selected{% endif %}>720p</option><option {% if p.video_quality == '1080p' %}selected{% endif %}>1080p</option></select></label><label class="check-label"><input type="checkbox" name="screen_share" {% if p.screen_share %}checked{% endif %}> Screen share</label><label class="check-label"><input type="checkbox" name="whiteboard" {% if p.whiteboard %}checked{% endif %}> Whiteboard</label><label class="check-label"><input type="checkbox" name="recording" {% if p.recording %}checked{% endif %}> Recording</label><label class="check-label"><input type="checkbox" name="custom_branding" {% if p.custom_branding %}checked{% endif %}> Branding</label><button class="secondary">Save</button></form>{% endfor %}</div>
+  </article>
+  <article class="panel gap">
+    <div class="panel-head"><div><span class="section-kicker">USERS</span><h2>Recent users</h2></div></div>
+    {% for u in recent_users %}<div class="admin-row"><div><b>{{u.username}}</b><span>{{u.email}}</span></div><form class="user-plan-form" method="post" action="{% url 'control_assign_plan' u.id %}">{% csrf_token %}<select name="plan_id">{% for p in plans %}<option value="{{p.id}}" {% if u.subscription.plan_id == p.id %}selected{% endif %}>{{p.name}}</option>{% endfor %}</select><button class="secondary">Update</button></form></div>{% endfor %}
+  </article>
+</main>
+{% endblock %}

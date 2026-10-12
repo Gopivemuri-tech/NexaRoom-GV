@@ -1,0 +1,6 @@
+/* NexaRoom V9.2: meeting-only feedback for peers with no playable video. */
+.meeting-body .peer-video-status{display:none;position:absolute;z-index:3;left:5px;right:5px;top:5px;text-align:center;pointer-events:none;font-size:10px;line-height:1.25;color:#d7e7e0;text-shadow:0 1px 2px #000;background:rgba(2,22,25,.72);border-radius:5px;padding:3px 4px}
+.meeting-body .participant-thumb.camera-off .peer-video-status{display:block}
+.meeting-body .speaker-media-status{position:absolute;z-index:3;top:calc(50% + 64px);left:5%;right:5%;text-align:center;pointer-events:none;color:#d9e9e4;font-size:13px;line-height:1.4;text-shadow:0 2px 4px #000}
+.meeting-body .speaker-media-status.hidden{display:none}
+@media (max-width:760px){.meeting-body .speaker-media-status{font-size:12px;top:calc(50% + 57px)}}

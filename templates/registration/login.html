@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sign in | NexaRoom-GV{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<main class="auth-shell">
+  <section class="auth-visual">
+    <a class="brand auth-brand" href="#"><img src="{% static 'img/nexaroom-mark.svg' %}" alt=""><span>NexaRoom-GV</span></a>
+    <div class="auth-visual-copy"><span class="section-kicker">YOUR MEETING SPACE</span><h1>Simple meetings.<br>Better teamwork.</h1><p>Video, chat and collaboration in one room.</p></div>
+    <div class="auth-feature-row"><span>HD Video</span><span>Screen Share</span><span>Whiteboard</span></div>
+  </section>
+  <section class="auth-card">
+    <span class="section-kicker">WELCOME BACK</span>
+    <h2>Sign in</h2>
+    <p class="auth-subtitle">Continue to NexaRoom-GV.</p>
+    <form method="post">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+      <label>Username<input name="username" autocomplete="username" required></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+      {% if form.errors %}<div class="error">Invalid username or password.</div>{% endif %}
+      <button class="primary full-btn">Sign in</button>
+    </form>
+    <p class="auth-switch">New here? <a href="{% url 'signup' %}?next={{ next|urlencode }}">Create account</a></p>
+  </section>
+</main>
+{% endblock %}

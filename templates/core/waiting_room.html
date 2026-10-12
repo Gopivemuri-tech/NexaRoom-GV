@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Waiting | NexaRoom{% endblock %}
+{% block content %}
+<main class="center status-page"><div class="waiting"><span class="status-icon">⌛</span><span class="section-kicker">SCHEDULED</span><h1>{{meeting.title}}</h1><p>{{meeting.scheduled_for|date:'M d, Y · h:i A'}}</p><a class="secondary" href="{% url 'dashboard' %}">Back home</a></div></main>
+{% endblock %}

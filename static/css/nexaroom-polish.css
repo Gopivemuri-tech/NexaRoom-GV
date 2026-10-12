@@ -1,0 +1,50 @@
+/* NexaRoom-GV v9 refined workspace — presentation-only overrides. */
+:root { --nexa-ink:#102a2b; --nexa-brand:#116a58; --nexa-focus:#c7ebe1; }
+body.app-body { background:radial-gradient(circle at 90% 5%, #e8f5ee 0, transparent 28%), #f6f8f6; color:var(--nexa-ink); }
+.topbar { background:rgba(255,255,255,.94); backdrop-filter:blur(16px); box-shadow:0 3px 18px rgba(20,57,48,.04); }
+.topnav a { transition:background .2s,color .2s; border-radius:9px; }
+.topnav a:hover,.topnav a:focus-visible { background:#eaf4ef; color:#0a644b; }
+.account-profile-link { display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none;border-radius:12px;padding:5px 7px; transition:background .2s; }
+.account-profile-link:hover,.account-profile-link:focus-visible {background:#eaf4ef;outline:2px solid transparent;}
+.account-avatar { overflow:hidden; flex-shrink:0; }
+.nexa-avatar-img { width:100%;height:100%;object-fit:cover;object-position:center;display:block;border-radius:inherit; }
+.dashboard-hero {background:linear-gradient(117deg,#123f39 0%,#146757 68%,#14765e 100%); border-radius:26px;box-shadow:0 20px 55px rgba(15,88,69,.12);}
+.dashboard-hero .hero-copy h1 {letter-spacing:-.055em;text-wrap:balance;}
+.new-meeting-card {box-shadow:0 12px 28px rgba(12,50,44,.12);border:1px solid #e4eee9;}
+.quick-card,.panel {border:1px solid #e1eae5;box-shadow:0 8px 26px rgba(18,55,45,.045); transition:box-shadow .2s;}
+.quick-card:hover,.panel:hover {box-shadow:0 12px 32px rgba(18,55,45,.075);}
+.quick-card h2,.panel h2 { letter-spacing:-.025em; }
+.app-body input:focus-visible,.app-body select:focus-visible,.app-body button:focus-visible,.app-body a:focus-visible {outline:2px solid #1b8d72;outline-offset:3px;}
+/* Account details */
+.nexa-account-page {max-width:1100px; margin-bottom:80px;}
+.nexa-page-heading {display:flex;align-items:end;justify-content:space-between;gap:18px;margin:32px 0 24px;}
+.nexa-page-heading h1 {font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:6px 0 4px;}
+.nexa-page-heading p {color:#687b75;margin:0;}
+.nexa-back-link {font-weight:700;text-decoration:none;color:#15715a;white-space:nowrap;}
+.nexa-profile-layout {display:grid;grid-template-columns:minmax(250px,.85fr) minmax(350px,1.5fr);gap:22px;align-items:start;}
+.nexa-profile-summary,.nexa-profile-form {padding:30px;}
+.nexa-profile-summary {text-align:center;}
+.nexa-profile-preview {width:112px;height:112px;border-radius:28px;background:linear-gradient(130deg,#145d50,#183f58);color:white;font-size:48px;font-weight:750;display:grid;place-items:center;overflow:hidden;margin:0 auto 20px;}
+.nexa-profile-preview img {width:100%;height:100%;object-fit:cover;}
+.nexa-profile-summary h2 {font-size:23px;margin:5px 0;}.nexa-profile-summary p {color:#708078;}
+.nexa-profile-label {display:inline-block;border-radius:30px;padding:8px 14px;background:#e3f1e9;color:#116b55;font-size:12px;font-weight:700;}
+.nexa-profile-summary .nexa-photo-hint {margin:26px 0 4px;font-size:13px;line-height:1.5;}
+.nexa-profile-form h2 {font-size:24px;margin:0 0 5px;}.nexa-form-subtitle {color:#6d8078;margin:0 0 25px;}
+.nexa-profile-form form {display:grid;gap:15px;}.nexa-profile-form label {display:grid;gap:8px;font-size:14px;font-weight:650;}
+.nexa-profile-form input:not([type=checkbox]) {width:100%;height:46px;padding:10px 12px;border:1px solid #ccdcd3;border-radius:12px;background:#fff;color:#143d33;}
+.nexa-profile-form input[readonly] {background:#edf3ef;color:#64786f;}
+.nexa-profile-form input[type=file] {height:auto;padding:10px;}.nexa-profile-form input[type=checkbox] {width:20px;height:20px;}
+.nexa-profile-input small {font-size:12px;color:#6b7e74;}.nexa-profile-form .primary {min-height:45px;}
+/* Meeting avatar: shown when corresponding camera tile is hidden; does not alter video state. */
+.meeting-body .participant-avatar,.meeting-body .speaker-avatar {overflow:hidden;}
+.meeting-body .participant-avatar .nexa-avatar-img,.meeting-body .speaker-avatar .nexa-avatar-img {position:absolute;inset:0;width:100%;height:100%;}
+.meeting-body .person-avatar {overflow:hidden;}
+.meeting-body .meeting-brand {letter-spacing:-.01em;}
+@media(max-width:760px) {
+ .nexa-page-heading {align-items:start;flex-direction:column;}
+ .nexa-profile-layout {grid-template-columns:1fr;}
+ .nexa-profile-summary,.nexa-profile-form {padding:22px;}
+ .topbar .account-profile-link {gap:6px;}
+ .topbar .account-avatar {width:35px;height:35px;}
+ .dashboard-hero {border-radius:21px;}
+}

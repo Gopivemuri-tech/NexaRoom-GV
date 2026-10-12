@@ -1,0 +1,129 @@
+{% load static %}
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{meeting.title}} | NexaRoom-GV</title>
+<link rel="icon" type="image/svg+xml" href="{% static 'img/nexaroom-mark.svg' %}?v=9">
+<link rel="stylesheet" href="{% static 'css/app.css' %}?v=10">
+<link rel="stylesheet" href="{% static 'css/nexaroom-meeting-mobile.css' %}?v=20261011a">
+<link rel="stylesheet" href="{% static 'css/nexaroom-polish.css' %}?v=20261011b">
+<link rel="stylesheet" href="{% static 'css/nexaroom-peer-status.css' %}?v=20261012b">
+<link rel="stylesheet" href="{% static 'css/nexaroom-v99-ui.css' %}?v=20261012v99">
+</head>
+<body class="meeting-body">
+<header class="meeting-top">
+  <div class="meeting-top-left">
+    <div class="meeting-brand"><img src="{% static 'img/nexaroom-mark.svg' %}" alt=""><b>NexaRoom-GV</b></div>
+    <button id="meetingInfoBtn" class="meeting-info-button"><span class="info-circle">i</span><span>{% if meeting.duration_limit_minutes %}{{meeting.duration_limit_minutes}}-minute meeting{% else %}Unlimited meeting{% endif %}</span></button>
+  </div>
+  <div class="meeting-top-center"><b>{{meeting.title}}</b><small id="connectionState">Connecting…</small></div>
+  <div class="meeting-top-right"><span id="lockBadge" class="lock-badge hidden" title="Only invited people with a valid invitation can enter">Locked</span><span class="secure-pill">Secure</span><span id="timer" class="meeting-timer">00:00</span><button id="copyInvite" class="meeting-copy">Invite</button></div>
+</header>
+
+<main class="zoom-shell">
+  <section class="meeting-workspace">
+    <div id="filmstrip" class="filmstrip" aria-label="Meeting participants" role="group">
+      <article id="thumb-local" class="participant-thumb active" data-peer="local">
+        <div class="participant-avatar">{% if avatar_url %}<img class="nexa-avatar-img" src="{{avatar_url}}" alt="Your profile photo">{% else %}{{ user.get_full_name|default:user.username|first|upper }}{% endif %}</div>
+        <video id="localThumbVideo" autoplay muted playsinline></video>
+        <div class="participant-name"><span id="localMuteMark" class="mute-status mic-on"><svg viewBox="0 0 24 24"><path d="M12 4a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V7a3 3 0 0 0-3-3zM6 11.5v.5a6 6 0 0 0 12 0v-.5M12 18v3M9 21h6"/></svg></span><span>{{user.get_full_name|default:user.username}}</span></div>
+      </article>
+    </div>
+    <section class="speaker-stage">
+      <div class="speaker-frame" id="speakerFrame">
+        <div id="speakerAvatar" class="speaker-avatar">{% if avatar_url %}<img class="nexa-avatar-img" src="{{avatar_url}}" alt="Your profile photo">{% else %}{{ user.get_full_name|default:user.username|first|upper }}{% endif %}</div>
+        <video id="mainVideo" autoplay playsinline muted></video>
+        <div id="speakerMediaStatus" class="speaker-media-status hidden" aria-live="polite"></div>
+        <div class="speaker-bottom"><span id="speakerName">{{user.get_full_name|default:user.username}}</span>{% if is_host %}<span id="currentHostBadge" class="host-badge">HOST</span>{% else %}<span id="currentHostBadge" class="host-badge hidden">HOST</span>{% endif %}</div>
+        <div id="captionOverlay" class="caption-overlay hidden"></div>
+        <div id="reactionLayer" class="reaction-layer"></div>
+      </div>
+    </section>
+  </section>
+
+  <aside id="sidePanel" class="meeting-side closed">
+    <div class="side-head"><div class="side-tabs"><button data-tab="people" class="side-tab">Participants <span id="peopleCount">1</span></button><button data-tab="chat" class="side-tab active">Chat</button><button data-tab="files" class="side-tab">Files</button></div><button id="closeSide" class="side-close">×</button></div>
+    <section id="tab-people" class="side-pane hidden"><div id="peopleList" class="people-list"></div></section>
+    <section id="tab-chat" class="side-pane"><div id="chatMessages" class="chat-list"><div class="empty-chat">No messages yet.</div></div><form id="chatForm" class="chat-compose"><input id="chatInput" placeholder="Message everyone" autocomplete="off"><button>Send</button></form></section>
+    <section id="tab-files" class="side-pane hidden"><div class="security-note">Encrypted · Max {{plan.max_file_mb}} MB</div><div id="fileList" class="file-list"></div></section>
+  </aside>
+</main>
+
+<footer class="meeting-toolbar">
+ <div class="toolbar-group left-tools">
+  <button id="micBtn" class="meeting-tool" aria-label="Mute microphone"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5.5 11.5v.5a6.5 6.5 0 0 0 13 0v-.5M12 18.5V22M9 22h6"/><path class="device-slash" d="M3 3L21 21"/></svg></span><small>Mute</small></button>
+  <button id="camBtn" class="meeting-tool" aria-label="Turn camera off"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 6h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zM17 10l5-3v10l-5-3"/><path class="device-slash" d="M3 3L21 21"/></svg></span><small>Stop Video</small></button>
+  <button id="quickDevicesBtn" class="meeting-tool" title="Choose integrated camera and microphone"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16M8 4v6M16 9v6M10 14v6"/></svg></span><small>Devices</small></button>
+ </div>
+ <div class="toolbar-group center-tools">
+  <button id="peopleBtn" class="meeting-tool"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16.5 10a2.5 2.5 0 1 0 0-5M2.5 20v-2a5.5 5.5 0 0 1 11 0v2M14 14a5 5 0 0 1 7.5 4.3V20"/></svg></span><small>Participants</small><span id="toolbarPeopleCount" class="tool-count">1</span></button>
+  <button id="chatBtn" class="meeting-tool"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4V4zM8 9h8M8 12h5"/></svg></span><small>Chat</small><span id="chatUnreadBadge" class="meeting-unread hidden">0</span></button>
+  <div class="reaction-wrap"><button id="reactBtn" class="meeting-tool"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M12 20s-8-4.8-8-10.2A4.8 4.8 0 0 1 12 6.2a4.8 4.8 0 0 1 8 3.6C20 15.2 12 20 12 20z"/></svg></span><small>React</small></button><div id="reactionMenu" class="reaction-menu hidden"><button>👍</button><button>👏</button><button>❤️</button><button>🎉</button><button>😂</button></div></div>
+  <button id="screenBtn" class="meeting-tool share"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H4zM8 20h8M12 16v4M12 13V7M9 10l3-3 3 3"/></svg></span><small>Share</small></button>
+  <button id="hostToolsBtn" class="meeting-tool {% if not is_host %}hidden{% endif %}"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3zM9 12l2 2 4-4"/></svg></span><small>Host Tools</small></button>
+  <div class="more-wrap"><button id="moreBtn" class="meeting-tool"><span class="tool-icon"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span><small>More</small><span id="moreUnreadBadge" class="meeting-unread hidden">0</span></button>
+   <div id="moreMenu" class="more-menu more-menu-full hidden">
+    <button id="networkDebugBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><div><b>Connection diagnostics</b><small>Check peer video, audio and TURN</small></div></button>
+    <button id="recordBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></svg></span><div><b>Record meeting</b><small>Save locally</small></div></button>
+    <button id="captionsBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M10 9a3 3 0 1 0 0 6m8-6a3 3 0 1 0 0 6"/></svg></span><div><b>Captions</b><small>Live captions</small></div></button>
+    <button id="notesBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></span><div><b>Meeting notes</b><small>Private notes</small></div></button>
+    <button id="boardBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="m9 22 3-4 3 4M7 9h10M7 13h6"/></svg></span><div><b>Whiteboard</b><small>Live canvas</small></div></button>
+    <button id="fileBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></svg></span><div><b>Share files</b><small>Encrypted transfer</small></div><span id="filesUnreadBadge" class="meeting-unread mini-unread hidden">0</span></button>
+    <button id="moreMeetingInfo" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/></svg></span><div><b>Meeting info</b><small>ID and invite</small></div></button>
+    <button id="appsBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7m-3.5-3.5h7"/></svg></span><div><b>Apps</b><small>Meeting tools</small></div></button>
+    <button id="settingsBtn" class="more-item"><span class="more-icon"><svg viewBox="0 0 24 24"><path d="M10 2h4l.7 2.5 2 .9 2.4-1.1 2 3.5-1.9 1.8.2 2.4 2 1.6-2 3.5-2.4-1.1-2 .9L14 20h-4l-.7-2.5-2-.9-2.4 1.1-2-3.5 1.9-1.8-.2-2.4-2-1.6 2-3.5 2.4 1.1 2-.9z" transform="translate(0 1) scale(1 .95)"/><circle cx="12" cy="11.5" r="2.8"/></svg></span><div><b>Settings</b><small>Audio and video</small></div></button>
+   </div>
+  </div>
+ </div>
+ <div class="toolbar-group right-tools"><button id="endBtn" class="meeting-tool leave {% if not is_host %}hidden{% endif %}"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M12 2v9M6.3 5.3a8 8 0 1 0 11.4 0"/></svg></span><small>End</small></button><button id="leaveBtn" class="meeting-tool leave {% if is_host %}hidden{% endif %}"><span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/></svg></span><small>Leave</small></button></div>
+ <input id="fileInput" type="file" hidden>
+</footer>
+
+<section id="hostToolsPanel" class="sheet-modal hidden"><div class="sheet-card">
+ <div class="sheet-head"><div><span class="section-kicker">HOST TOOLS</span><h3>Meeting controls</h3></div><button id="closeHostTools">×</button></div>
+ <div class="host-action-grid">
+  <button id="muteAllBtn" class="host-action danger-lite"><b>Mute everyone</b><small>Mute participants</small></button>
+  <label class="host-toggle"><div><b>Lock meeting</b><small>Stop new joins</small></div><input id="lockMeetingToggle" type="checkbox"><span></span></label>
+  <label class="host-toggle"><div><b>Allow chat</b><small>Participant messaging</small></div><input id="allowChatToggle" type="checkbox" checked><span></span></label>
+  <label class="host-toggle"><div><b>Allow screen share</b><small>Participant sharing</small></div><input id="allowShareToggle" type="checkbox" checked><span></span></label>
+  <label class="host-toggle"><div><b>Allow participants to unmute</b><small>Participant unmute</small></div><input id="allowUnmuteToggle" type="checkbox" checked><span></span></label>
+  <label class="host-toggle"><div><b>Allow participants to start video</b><small>Participant video</small></div><input id="allowVideoToggle" type="checkbox" checked><span></span></label>
+ </div>
+ <p class="host-help">Use Participants for individual controls.</p>
+</div></section>
+
+<section id="meetingInfoModal" class="meeting-popover hidden"><div class="meeting-info-card">
+ <div class="popover-head"><div><span class="section-kicker">MEETING INFO</span><h3>{{meeting.title}}</h3></div><button id="closeMeetingInfo">×</button></div>
+ <div class="meeting-info-row"><span>Invite link</span><div><input id="inviteLinkValue" readonly><button id="copyInfoInvite">Copy</button></div></div>
+ <div class="meeting-info-row"><span>Meeting ID</span><b>{{meeting.meeting_code_display}}</b></div>
+ <div class="meeting-info-row"><span>Passcode</span><b>{{meeting.passcode}}</b></div>
+ <div class="meeting-info-row"><span>Host</span><b>{{meeting.host.get_full_name|default:meeting.host.username}}</b></div>
+ <div class="meeting-info-row"><span>Participants</span><b id="infoPeopleCount">1</b></div>
+ <div class="meeting-info-row"><span>Security</span><b>WebRTC + encrypted files</b></div>
+</div></section>
+
+<section id="notesModal" class="sheet-modal hidden"><div class="sheet-card notes-card"><div class="sheet-head"><div><span class="section-kicker">MEETING NOTES</span><h3>{{meeting.title}}</h3></div><button id="closeNotes">×</button></div><textarea id="meetingNotes" class="notes-area" placeholder="Write notes…"></textarea><div class="sheet-actions"><button id="clearNotes" class="dialog-secondary">Clear</button><button id="downloadNotes" class="dialog-primary">Download notes</button></div></div></section>
+
+<section id="settingsModal" class="sheet-modal hidden"><div class="sheet-card settings-card"><div class="sheet-head"><div><span class="section-kicker">DEVICES</span><h3>Select camera & microphone</h3></div><button id="closeSettings">×</button></div><p class="device-hint">Choose Integrated Camera if Phone Link or a virtual camera was selected. Approve browser permissions if prompted.</p><label>Camera<select id="cameraSelect"></select></label><label>Microphone<select id="micSelect"></select></label><div class="mic-test-panel"><button id="testMicBtn" type="button" class="dialog-secondary">Test microphone</button><div class="mic-meter"><div id="micTestBar"></div></div><span id="micTestStatus">Speak to check input after granting permission.</span></div><div class="sheet-actions"><button id="applyDevices" class="dialog-primary">Apply devices</button></div></div></section>
+
+
+<section id="appsModal" class="sheet-modal hidden"><div class="sheet-card">
+ <div class="sheet-head"><div><span class="section-kicker">NEXAROOM APPS</span><h3>Meeting tools</h3></div><button id="closeApps">×</button></div>
+ <div class="apps-grid">
+  <button data-open-tool="notes"><b>Meeting Notes</b><small>Write and download notes</small></button>
+  <button data-open-tool="board"><b>Whiteboard</b><small>Draw together</small></button>
+  <button data-open-tool="files"><b>Secure Files</b><small>Encrypted file sharing</small></button>
+ </div>
+</div></section>
+
+<section id="boardModal" class="modal hidden"><div class="board-card"><div class="board-head"><div><span class="section-kicker">COLLABORATION</span><h3>Whiteboard</h3></div><div class="board-actions"><input id="boardColor" type="color" value="#4F8CFF"><input id="boardSize" type="range" min="1" max="12" value="3"><button id="clearBoard" class="ghost">Clear</button><button id="closeBoard" class="ghost">Close</button></div></div><canvas id="whiteboard"></canvas></div></section>
+
+<section id="appDialog" class="app-dialog hidden" role="dialog" aria-modal="true"><div class="app-dialog-card"><div id="appDialogIcon" class="app-dialog-icon">!</div><div class="app-dialog-copy"><span class="section-kicker">NEXAROOM</span><h3 id="appDialogTitle">Confirm</h3><p id="appDialogMessage"></p></div><div class="app-dialog-actions"><button id="appDialogCancel" class="dialog-secondary">Cancel</button><button id="appDialogConfirm" class="dialog-primary">Continue</button></div></div></section>
+<div id="fatalBanner" class="fatal-banner hidden"></div><div id="toast" class="toast"></div>
+<div id="meetingNotifications" class="meeting-notification-stack" role="status" aria-live="polite" aria-relevant="additions"></div>
+
+<script>window.NEXAROOM={room:"{{meeting.id}}",meetingCode:"{{meeting.meeting_code_display|escapejs}}",passcode:"{{meeting.passcode|escapejs}}",inviteToken:"{{invite_token|escapejs}}",avatarUrl:"{{avatar_url|escapejs}}",joinPath:"{% url 'join_meeting' %}",publicBaseUrl:"{{public_base_url|escapejs}}",userId:{{user.id}},displayName:"{{user.get_full_name|default:user.username|escapejs}}",initials:"{{user.get_full_name|default:user.username|first|upper|escapejs}}",isHost:{{is_host|yesno:'true,false'}},canRecord:{{plan.recording|yesno:'true,false'}},maxFileMb:{{plan.max_file_mb}},videoQuality:"{{plan.video_quality|escapejs}}",allowScreenShare:{{meeting.allow_screen_share|yesno:'true,false'}},allowWhiteboard:{{meeting.allow_whiteboard|yesno:'true,false'}},allowFiles:{{meeting.allow_files|yesno:'true,false'}},durationLimit:{% if meeting.duration_limit_minutes %}{{meeting.duration_limit_minutes}}{% else %}null{% endif %},endMeetingUrl:"{% url 'end_meeting_api' meeting.id %}",meetingStateUrl:"{% url 'meeting_state_api' meeting.id %}",csrfToken:"{{csrf_token}}"};</script>
+{{ ice_servers|json_script:"nexaroom-ice-servers" }}
+<script>window.NEXAROOM.iceServers=JSON.parse(document.getElementById('nexaroom-ice-servers').textContent);</script>
+<script>(function(){const sources=["{% static 'js/socket.io.min.js' %}?v=20261012a","https://cdn.socket.io/4.7.5/socket.io.min.js","https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/dist/socket.io.min.js"];let i=0;function next(){if(window.io){window.dispatchEvent(new Event("nexaroom-socket-ready"));return}if(i>=sources.length){window.dispatchEvent(new Event("nexaroom-socket-failed"));return}const s=document.createElement("script");s.src=sources[i++];s.async=true;s.onload=()=>window.io?window.dispatchEvent(new Event("nexaroom-socket-ready")):next();s.onerror=next;document.head.appendChild(s)}next()})();</script>
+<script src="{% static 'js/meeting.js' %}?v=20261012v99"></script>
+</body></html>

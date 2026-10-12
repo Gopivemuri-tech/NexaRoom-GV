@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Home | NexaRoom{% endblock %}
+{% block content %}
+<main class="page dashboard-page">
+  <section class="dashboard-hero">
+    <div class="hero-copy">
+      <span class="section-kicker">NEXAROOM-GV · WORKSPACE</span>
+      <h1>Meet. Share. Move forward.</h1>
+      <p>One secure space for conversations, collaboration and teamwork.</p>
+      <div class="hero-status">
+        <span class="status-dot"></span>
+        <b>{{subscription.plan.name}}</b>
+        <span>{{subscription.plan.meeting_limit_label}}</span>
+        <span>{{subscription.plan.video_quality}}</span>
+      </div>
+    </div>
+    <form class="new-meeting-card" method="post" action="{% url 'create_meeting' %}">{% csrf_token %}
+      <div class="new-meeting-icon">
+        <svg viewBox="0 0 24 24"><path d="M15 10l5-3v10l-5-3M4 6h9a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg>
+      </div>
+      <div class="new-meeting-copy"><span>QUICK START</span><b>New meeting</b></div>
+      <input name="title" value="NexaRoom Meeting" aria-label="Meeting title">
+      <button class="primary" type="submit">Start meeting →</button>
+    </form>
+  </section>
+
+  <section class="quick-grid">
+    <article class="quick-card">
+      <div class="quick-card-head">
+        <span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M18 12H9"/></svg></span>
+        <div><span class="section-kicker">JOIN</span><h2>Join a meeting</h2></div>
+      </div>
+      <form method="get" action="{% url 'join_meeting' %}" id="joinMeetingForm">
+        <input name="invite" id="inviteInput" placeholder="Invite link or Meeting ID" required>
+        <div class="inline-form"><input name="passcode" placeholder="Passcode"><button class="secondary">Join</button></div>
+      </form>
+    </article>
+
+    <article class="quick-card">
+      <div class="quick-card-head">
+        <span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1zM8 13h3M8 17h6"/></svg></span>
+        <div><span class="section-kicker">SCHEDULE</span><h2>Schedule a meeting</h2></div>
+      </div>
+      <form method="post" action="{% url 'schedule_meeting' %}">{% csrf_token %}
+        <input name="title" value="NexaRoom Meeting">
+        <div class="inline-form"><input type="datetime-local" name="scheduled_for" required><button class="secondary">Schedule</button></div>
+      </form>
+    </article>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="panel meeting-history-card">
+      <div class="panel-head">
+        <div><span class="section-kicker">RECENT</span><h2>Your meetings</h2></div>
+        <a href="{% url 'meetings' %}">View all</a>
+      </div>
+      <div class="meeting-list">
+      {% for m in recent_meetings %}
+        <a class="meeting-list-row" href="{% url 'meeting_room' m.id %}">
+          <span class="meeting-list-icon"><svg viewBox="0 0 24 24"><path d="M15 10l4-2.7v9.4L15 14M5 6.5h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"/></svg></span>
+          <span class="meeting-list-copy"><b>{{m.title}}</b><small>{{m.created_at|date:'M d, Y · h:i A'}}</small></span>
+          <span class="meeting-list-meta"><em class="meeting-state {{m.status}}">{{m.get_status_display}}</em><strong>{{m.meeting_code_display}}</strong></span>
+        </a>
+      {% empty %}<div class="empty-state">No meetings yet.</div>{% endfor %}
+      </div>
+    </article>
+
+    <article class="panel plan-card-mini">
+      <div class="plan-mini-top">
+        <span class="section-kicker">CURRENT PLAN</span>
+        <span class="plan-chip">{{subscription.plan.video_quality}}</span>
+      </div>
+      <h2>{{subscription.plan.name}}</h2>
+      <div class="plan-mini-list">
+        <div><span>Duration</span><b>{{subscription.plan.meeting_limit_label}}</b></div>
+        <div><span>Participants</span><b>{{subscription.plan.max_participants}}</b></div>
+        <div><span>File limit</span><b>{{subscription.plan.max_file_mb}} MB</b></div>
+      </div>
+      <a class="secondary full-btn" href="{% url 'plans' %}">Manage plan</a>
+    </article>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('joinMeetingForm')?.addEventListener('submit',function(e){
+ const v=document.getElementById('inviteInput').value.trim();
+ if(/^https?:\/\//i.test(v)&&v.includes('/meet/')){e.preventDefault();window.location.href=v;}
+});
+</script>
+{% endblock %}
